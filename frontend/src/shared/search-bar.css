@@ -391,6 +391,8 @@ h6 {
     font-size: 18px;
     padding: 0.5rem;
     display: inline-block;
+    background-color: white;
+    color: rgb(5, 86, 113);
   }
   
   .cost-input {
@@ -454,6 +456,8 @@ h6 {
     font-size: 16px;
     padding: 0.5rem;
     display: inline-block;
+        background-color: white;
+    color: rgb(5, 86, 113);
   }
   
   .cost-input {
@@ -520,6 +524,8 @@ h6 {
     font-size: 14px;
     padding: 0.3rem;
     display: inline-block;
+        background-color: white;
+    color: rgb(5, 86, 113);
   }
   
   .cost-input {

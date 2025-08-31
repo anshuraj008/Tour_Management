@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'; 
-import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap';
+import { Container, Row, Col, Form, FormGroup, Button, Alert } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 
@@ -14,6 +14,7 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [showRegisterMessage, setShowRegisterMessage] = useState(false);
 
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -38,7 +39,17 @@ const Login = () => {
       });
 
       const result = await res.json();
-      if (!res.ok) alert(result.message);
+      
+      if (!res.ok) {
+        // Check if the error is related to user not found
+        if (result.message === "User not found") {
+          setShowRegisterMessage(true);
+        } else {
+          alert(result.message);
+        }
+        dispatch({ type: 'LOGIN_FAILURE', payload: result.message });
+        return;
+      }
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: result.data });
       navigate('/');
@@ -64,6 +75,18 @@ const Login = () => {
                   <img src={userIcon} alt="User icon" />
                 </div>
                 <h2>Login</h2>
+                
+                {showRegisterMessage && (
+                  <Alert color="warning" className="register-alert">
+                    <i className="ri-information-line mr-2"></i>
+                    It seems you haven't registered yet. Please register first before attempting to login.
+                    <div className="mt-2">
+                      <Link to="/register" className="btn btn-sm btn-outline-primary">
+                        <i className="ri-user-add-line"></i> Register Now
+                      </Link>
+                    </div>
+                  </Alert>
+                )}
 
                 <Form onSubmit={handleClick}>
                   <FormGroup>

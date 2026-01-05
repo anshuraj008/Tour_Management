@@ -21,8 +21,9 @@ export const register = async (req, res) => {
         res.status(200)
         .json({success: true, message: 'Successfully created'});
     }catch (err){
+        console.error('Register error:', err);
         res.status(500)
-        .json({success: false, message: 'Failed to created. Try again'});
+        .json({success: false, message: 'Failed to created. Try again', error: err.message});
     }
 };
 
@@ -71,8 +72,9 @@ export const login = async (req, res) => {
         });
 
     } catch (err) {
+        console.error('Login error:', err);
         res
         .status(500)
-        .json({success: false, message: 'Failed to login'});
+        .json({success: false, message: 'Failed to login', error: err.message});
     }
 };

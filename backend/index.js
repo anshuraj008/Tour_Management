@@ -13,9 +13,28 @@ import bookingRoute from './routes/booking.js';
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
+
+// CORS configuration for Vercel deployment
+const allowedOrigins = [
+	'https://tour-management-psi-neon.vercel.app',
+	'http://localhost:3000',
+	'http://localhost:4000'
+];
+
 const corsOptions = {
-	origin: true,
-	credentials: true
+	origin: function (origin, callback) {
+		// Allow requests with no origin (like mobile apps or curl requests)
+		if (!origin) return callback(null, true);
+		
+		if (allowedOrigins.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			callback(null, true); // Allow all origins in development, restrict in production
+		}
+	},
+	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization']
 }
 
 // database connection

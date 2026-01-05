@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ],
-  "env": {
-    "MONGO_URL": "@mongo_url",
-    "JWT_SECRET_KEY": "@jwt_secret_key",
-    "NODE_ENV": "production"
-  }
+  ]
 }

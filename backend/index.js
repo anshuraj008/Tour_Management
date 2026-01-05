@@ -19,19 +19,42 @@ const corsOptions = {
 }
 
 // database connection
-mongoose.set('strictQuery',false)
-const connect = async()=>{
+mongoose.set('strictQuery',false);
+
+let isConnected = false;
+
+const connect = async () => {
+	if (isConnected) {
+		console.log('Using existing database connection');
+		return;
+	}
+	
 	try {
-	     await mongoose.connect(process.env.MONGO_URL)
-
-	console.log('MongoDB database connected');
-
+		const db = await mongoose.connect(process.env.MONGO_URL, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
+		
+		isConnected = db.connections[0].readyState === 1;
+		console.log('MongoDB database connected');
 	} catch (err) {
-		console.log('MongoDB database connection failed:', err.message)
+		console.log('MongoDB database connection failed:', err.message);
+		throw err;
 	}	
 };
 
-
+// Middleware to ensure DB connection for each request in serverless
+app.use(async (req, res, next) => {
+	try {
+		await connect();
+		next();
+	} catch (error) {
+		res.status(500).json({ 
+			success: false, 
+			message: 'Database connection failed' 
+		});
+	}
+});
 
 //middleware
 app.use(express.json());
@@ -66,16 +89,13 @@ app.use("*", (req, res) => {
 	});
 });
 
-// Connect to database immediately
-connect();
-
-// For Vercel serverless deployment
-if (process.env.VERCEL) {
-	// Export the Express app for Vercel
-	export default app;
-} else {
-	// For local development
-	app.listen(port, () => {
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+	app.listen(port, async () => {
+		await connect();
 		console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
 	});
 }
+
+// Export for Vercel serverless
+export default app;

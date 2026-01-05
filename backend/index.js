@@ -61,6 +61,21 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
+// Health check route
+app.get('/', (req, res) => {
+	res.status(200).json({
+		success: true,
+		message: 'Tour Management API is running'
+	});
+});
+
+app.get('/api/v1', (req, res) => {
+	res.status(200).json({
+		success: true,
+		message: 'API v1 is working'
+	});
+});
+
 // Routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/tours', tourRoute);

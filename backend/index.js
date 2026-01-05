@@ -66,7 +66,16 @@ app.use("*", (req, res) => {
 	});
 });
 
-app.listen(port, () => {
-	connect();
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
-});
+// Connect to database immediately
+connect();
+
+// For Vercel serverless deployment
+if (process.env.VERCEL) {
+	// Export the Express app for Vercel
+	export default app;
+} else {
+	// For local development
+	app.listen(port, () => {
+		console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
+	});
+}
